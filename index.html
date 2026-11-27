@@ -24,7 +24,6 @@
       color: white;
       text-decoration: none;
       padding: 12px 20px;
-      cursor: pointer;
     }
     .sidebar a:hover {
       background: #ffcc00;
@@ -51,22 +50,6 @@
     .header p {
       margin: 5px 0 0;
       color: #ccc;
-    }
-    .owner-box {
-      display: none;
-      background: #111;
-      color: white;
-      padding: 20px;
-      margin: 20px 40px;
-      border-left: 4px solid #ffcc00;
-    }
-    .owner-box h3 {
-      margin-top: 0;
-      color: #ffcc00;
-    }
-    .owner-box input, .owner-box select {
-      padding: 8px;
-      margin: 5px;
     }
     .content {
       padding: 30px 40px;
@@ -103,9 +86,9 @@
     <a href="index.html">Home</a>
     <a href="login.html">Log In</a>
     <a href="cart.html">Cart</a>
-    <a href="about.html">About Us</a>
+    <a href="aboutus.html">About Us</a>
     <a href="contact.html">Contact Us</a>
-    <a onclick="openOwner()">Owner</a>
+    <a href="admin.html">Owner</a>
     <small class="hint">Pass: 1234</small>
   </div>
 
@@ -114,53 +97,31 @@
     <p>Premium Safety Shoes & Workwear in Egypt</p>
   </div>
 
-  <div class="owner-box" id="ownerBox">
-    <h3>Add New Product (Owner)</h3>
-    <select id="cat">
-      <option value="boots">Boots</option>
-      <option value="body">Body Protection</option>
-      <option value="eye">Eye Protection</option>
-      <option value="gloves">Gloves</option>
-      <option value="helmets">Helmets</option>
-    </select>
-    <input type="text" id="pname" placeholder="Product Name">
-    <input type="number" id="pprice" placeholder="Price">
-    <input type="file" id="pimg" accept="image/*">
-    <button onclick="addProduct()">Add Product</button>
-  </div>
-
   <div class="content">
     <h2>BOOTS</h2>
-    <div id="boots"></div>
+    <div id="bootsList"></div>
 
     <h2>Body Protection</h2>
-    <div id="body"></div>
+    <div id="bodyList"></div>
 
     <h2>EYE PROTECTION</h2>
-    <div id="eye"></div>
+    <div id="eyeList"></div>
 
     <h2>GLOVES</h2>
-    <div id="gloves"></div>
+    <div id="glovesList"></div>
 
     <h2>HELMETS</h2>
-    <div id="helmets"></div>
+    <div id="helmetList"></div>
   </div>
 
   <script>
-    function openOwner() {
-      var pass = prompt("Enter Owner Password:");
-      if (pass == "1234") {
-        document.getElementById("ownerBox").style.display = "block";
-      }
-    }
-
     function showProducts() {
-      var cats = ["boots", "body", "eye", "gloves", "helmets"];
+      var cats = ["bootsList", "bodyList", "eyeList", "glovesList", "helmetList"];
       for (var c = 0; c < cats.length; c++) {
         document.getElementById(cats[c]).innerHTML = "";
       }
 
-      var list = JSON.parse(localStorage.getItem("products")) || [];
+      var list = JSON.parse(localStorage.getItem("safety_products")) || [];
 
       for (var i = 0; i < list.length; i++) {
         var p = list[i];
@@ -177,35 +138,10 @@
       }
     }
 
-    function addProduct() {
-      var cat = document.getElementById("cat").value;
-      var name = document.getElementById("pname").value;
-      var price = document.getElementById("pprice").value;
-      var file = document.getElementById("pimg").files[0];
-
-      if (name == "" || price == "" || !file) {
-        return;
-      }
-
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var list = JSON.parse(localStorage.getItem("products")) || [];
-        list.push({ cat: cat, name: name, price: price, img: e.target.result });
-        localStorage.setItem("products", JSON.stringify(list));
-
-        showProducts();
-
-        document.getElementById("pname").value = "";
-        document.getElementById("pprice").value = "";
-        document.getElementById("pimg").value = "";
-      };
-      reader.readAsDataURL(file);
-    }
-
     function addCart(name, price, img) {
-      var cart = JSON.parse(localStorage.getItem("cart")) || [];
+      var cart = JSON.parse(localStorage.getItem("safety_cart")) || [];
       cart.push({ name: name, price: price, img: img });
-      localStorage.setItem("cart", JSON.stringify(cart));
+      localStorage.setItem("safety_cart", JSON.stringify(cart));
     }
 
     showProducts();
