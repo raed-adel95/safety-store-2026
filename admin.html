@@ -3,8 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>Owner Panel - SAFETY STORE</title>
-  <link rel="stylesheet" href="MAIN PAGE2.CSS">
   <style>
+    body {
+      margin: 0;
+      margin-left: 160px;
+      font-family: Arial;
+    }
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 160px;
+      height: 100%;
+      background: #111;
+      border-right: 2px solid #ffcc00;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+    }
+    .sidebar a:hover {
+      background: #ffcc00;
+      color: black;
+    }
+    .header {
+      background: black;
+      color: white;
+      padding: 25px 30px;
+      border-bottom: 3px solid #ffcc00;
+    }
+    .header h1 { margin: 0; }
+    .header span { color: #ffcc00; }
+    .header p { margin: 5px 0 0; color: #ccc; }
     .admin-box {
       background: #111;
       color: white;
@@ -46,139 +79,143 @@
 </head>
 <body>
 
-<header>
-  <div>
-    <div class="logo">//<span>SAFETY</span>ADMIN</div>
-    <div class="tagline">Owner Control Panel</div>
-  </div>
-  <div class="links">
-    <a href="index.html">View Store</a>
-  </div>
-</header>
-
-<div id="adminContent" style="display: none;">
-  <div class="admin-box">
-    <h2 id="formTitle">ADD NEW PRODUCT</h2>
-    <input type="hidden" id="editIndex" value="-1">
-    
-    <select id="cat">
-      <option value="helmetList">HELMET</option>
-      <option value="bootsList">BOOTS</option>
-      <option value="bodyList">Body Protection</option>
-      <option value="eyeList">EYE PROTECTION</option>
-      <option value="glovesList">GLOVES</option>
-    </select>
-    <input type="text" id="pname" placeholder="Product Name">
-    <input type="number" id="pprice" placeholder="Price ($)">
-    <input type="text" id="pdesc" placeholder="Description">
-    <input type="file" id="pimg" accept="image/*">
-    
-    <button onclick="saveProduct()" id="saveBtn">ADD PRODUCT</button>
-    <button onclick="resetForm()" id="cancelBtn" style="display:none; background:#555; color:white;">CANCEL</button>
+  <div class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="login.html">Log In</a>
+    <a href="cart.html">Cart</a>
+    <a href="aboutus.html">About Us</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="admin.html">Owner</a>
   </div>
 
-  <div class="admin-list" id="adminProducts"></div>
-</div>
+  <div class="header">
+    <h1>//<span>SAFETY</span>ADMIN</h1>
+    <p>Owner Control Panel</p>
+  </div>
 
-<script>
-var pass = prompt("Enter Owner Password:");
-if (pass === "1234") {
-  document.getElementById("adminContent").style.display = "block";
-  showList();
-} else {
-  window.location.href = "index.html";
-}
+  <div id="adminContent" style="display: none;">
+    <div class="admin-box">
+      <h2 id="formTitle">ADD NEW PRODUCT</h2>
+      <input type="hidden" id="editIndex" value="-1">
+      
+      <select id="cat">
+        <option value="helmetList">HELMET</option>
+        <option value="bootsList">BOOTS</option>
+        <option value="bodyList">Body Protection</option>
+        <option value="eyeList">EYE PROTECTION</option>
+        <option value="glovesList">GLOVES</option>
+      </select>
+      <input type="text" id="pname" placeholder="Product Name">
+      <input type="number" id="pprice" placeholder="Price ($)">
+      <input type="text" id="pdesc" placeholder="Description">
+      <input type="file" id="pimg" accept="image/*">
+      
+      <button onclick="saveProduct()" id="saveBtn">ADD PRODUCT</button>
+      <button onclick="resetForm()" id="cancelBtn" style="display:none; background:#555; color:white;">CANCEL</button>
+    </div>
 
-function showList() {
-  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
-  var box = document.getElementById("adminProducts");
-  box.innerHTML = "";
+    <div class="admin-list" id="adminProducts"></div>
+  </div>
 
-  for (var i = 0; i < list.length; i++) {
-    box.innerHTML +=
-      '<div class="admin-card">' +
-        '<img src="' + list[i].img + '">' +
-        '<h4>' + list[i].name + '</h4>' +
-        '<p>' + list[i].price + '$</p>' +
-        '<button class="btn-edit" onclick="editItem(' + i + ')">EDIT</button> ' +
-        '<button class="btn-del" onclick="deleteItem(' + i + ')">DELETE</button>' +
-      '</div>';
-  }
-}
-
-function saveProduct() {
-  var index = Number(document.getElementById("editIndex").value);
-  var cat = document.getElementById("cat").value;
-  var name = document.getElementById("pname").value;
-  var price = document.getElementById("pprice").value;
-  var desc = document.getElementById("pdesc").value || "Safety equipment product.";
-  var file = document.getElementById("pimg").files[0];
-
-  if (name === "" || price === "") return;
-
-  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
-
-  if (index === -1 && !file) return;
-
-  if (index !== -1 && !file) {
-    list[index].cat = cat;
-    list[index].name = name;
-    list[index].price = price;
-    list[index].desc = desc;
-    localStorage.setItem("safety_products", JSON.stringify(list));
-    resetForm();
-    showList();
-    return;
-  }
-
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var item = { cat: cat, name: name, price: price, desc: desc, img: e.target.result };
-    if (index === -1) {
-      list.push(item);
+  <script>
+    var pass = prompt("Enter Owner Password:");
+    if (pass === "1234") {
+      document.getElementById("adminContent").style.display = "block";
+      showList();
     } else {
-      list[index] = item;
+      window.location.href = "index.html";
     }
-    localStorage.setItem("safety_products", JSON.stringify(list));
-    resetForm();
-    showList();
-  };
-  reader.readAsDataURL(file);
-}
 
-function editItem(index) {
-  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
-  var p = list[index];
+    function showList() {
+      var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+      var box = document.getElementById("adminProducts");
+      box.innerHTML = "";
 
-  document.getElementById("editIndex").value = index;
-  document.getElementById("cat").value = p.cat;
-  document.getElementById("pname").value = p.name;
-  document.getElementById("pprice").value = p.price;
-  document.getElementById("pdesc").value = p.desc;
+      for (var i = 0; i < list.length; i++) {
+        box.innerHTML +=
+          '<div class="admin-card">' +
+            '<img src="' + list[i].img + '">' +
+            '<h4>' + list[i].name + '</h4>' +
+            '<p>$' + list[i].price + '</p>' +
+            '<button class="btn-edit" onclick="editItem(' + i + ')">EDIT</button> ' +
+            '<button class="btn-del" onclick="deleteItem(' + i + ')">DELETE</button>' +
+          '</div>';
+      }
+    }
 
-  document.getElementById("formTitle").innerText = "EDIT PRODUCT";
-  document.getElementById("saveBtn").innerText = "UPDATE";
-  document.getElementById("cancelBtn").style.display = "inline-block";
-}
+    function saveProduct() {
+      var index = Number(document.getElementById("editIndex").value);
+      var cat = document.getElementById("cat").value;
+      var name = document.getElementById("pname").value;
+      var price = document.getElementById("pprice").value;
+      var desc = document.getElementById("pdesc").value || "Safety equipment product.";
+      var file = document.getElementById("pimg").files[0];
 
-function deleteItem(index) {
-  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
-  list.splice(index, 1);
-  localStorage.setItem("safety_products", JSON.stringify(list));
-  showList();
-}
+      if (name === "" || price === "") return;
 
-function resetForm() {
-  document.getElementById("editIndex").value = "-1";
-  document.getElementById("pname").value = "";
-  document.getElementById("pprice").value = "";
-  document.getElementById("pdesc").value = "";
-  document.getElementById("pimg").value = "";
-  document.getElementById("formTitle").innerText = "ADD NEW PRODUCT";
-  document.getElementById("saveBtn").innerText = "ADD PRODUCT";
-  document.getElementById("cancelBtn").style.display = "none";
-}
-</script>
+      var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+
+      if (index === -1 && !file) return;
+
+      if (index !== -1 && !file) {
+        list[index].cat = cat;
+        list[index].name = name;
+        list[index].price = price;
+        list[index].desc = desc;
+        localStorage.setItem("safety_products", JSON.stringify(list));
+        resetForm();
+        showList();
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var item = { cat: cat, name: name, price: price, desc: desc, img: e.target.result };
+        if (index === -1) {
+          list.push(item);
+        } else {
+          list[index] = item;
+        }
+        localStorage.setItem("safety_products", JSON.stringify(list));
+        resetForm();
+        showList();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function editItem(index) {
+      var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+      var p = list[index];
+
+      document.getElementById("editIndex").value = index;
+      document.getElementById("cat").value = p.cat;
+      document.getElementById("pname").value = p.name;
+      document.getElementById("pprice").value = p.price;
+      document.getElementById("pdesc").value = p.desc;
+
+      document.getElementById("formTitle").innerText = "EDIT PRODUCT";
+      document.getElementById("saveBtn").innerText = "UPDATE";
+      document.getElementById("cancelBtn").style.display = "inline-block";
+    }
+
+    function deleteItem(index) {
+      var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+      list.splice(index, 1);
+      localStorage.setItem("safety_products", JSON.stringify(list));
+      showList();
+    }
+
+    function resetForm() {
+      document.getElementById("editIndex").value = "-1";
+      document.getElementById("pname").value = "";
+      document.getElementById("pprice").value = "";
+      document.getElementById("pdesc").value = "";
+      document.getElementById("pimg").value = "";
+      document.getElementById("formTitle").innerText = "ADD NEW PRODUCT";
+      document.getElementById("saveBtn").innerText = "ADD PRODUCT";
+      document.getElementById("cancelBtn").style.display = "none";
+    }
+  </script>
 
 </body>
 </html>   
