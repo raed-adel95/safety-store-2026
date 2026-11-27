@@ -3,95 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>SAFETY EQUIPMENT STORE</title>
-  <link rel="stylesheet" href="MAIN PAGE2.CSS">   
+  <link rel="stylesheet" href="MAIN PAGE2.CSS">
 </head>
 <body>
 
-<aside class="sidebar">
-  <a href="index.html">Home</a>
-  <a href="login.html">Log In</a>
-  <a href="cart.html">Cart</a>
-  <a href="aboutus.html">About Us</a>
-  <a href="contact.html">Contact Us</a>
-  <a href="admin.html">Owner</a>
-</aside>
+  <aside class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="login.html">Log In</a>
+    <a href="cart.html">Cart</a>
+    <a href="aboutus.html">About Us</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="admin.html">Owner</a>
+  </aside>
 
-<header>
-  <div>
-    <div class="logo">//<span>SAFETY</span>STORE</div>
-    <div class="tagline">Premium Safety Shoes & Workwear in Egypt</div>
+  <header>
+    <div>
+      <div class="logo">//<span>SAFETY</span>STORE</div>
+      <div class="tagline">Premium Safety Shoes & Workwear in Egypt</div>
+    </div>
+  </header>
+
+  <div class="section">
+    <h2>BOOTS</h2>
+    <div class="products" id="bootsList"></div>
   </div>
 
-<div class="section">
-  <h2>BOOTS</h2>
-  <div class="products" id="bootsList"></div>
-</div>
-
-<div class="section">
-  <h2>Body Protection</h2>
-  <div class="products" id="bodyList"></div>
-</div>
-
-<div class="section">
-  <h2>EYE PROTECTION</h2>
-  <div class="products" id="eyeList"></div>
-</div>
-
-<div class="section">
-  <h2>GLOVES</h2>
-  <div class="products" id="glovesList"></div>
-</div>
-
-<div id="detailsBox">
-  <div class="details-content">
-    <img id="dImg" src="">
-    <h2 id="dName"></h2>
-    <h3 id="dPrice"></h3>
-    <p id="dDesc"></p>
-    <button onclick="closeDetails()">Close</button>
+  <div class="section">
+    <h2>Body Protection</h2>
+    <div class="products" id="bodyList"></div>
   </div>
-</div>
 
-<script>
-function addToCart(name, price, img) {
-  let cart = [];
-  if(localStorage.cart) {
-    cart = JSON.parse(localStorage.cart);
-  }
-  cart.push({ name: name, price: price, img: img });
-  localStorage.setItem('cart', JSON.stringify(cart));
-}
+  <div class="section">
+    <h2>EYE PROTECTION</h2>
+    <div class="products" id="eyeList"></div>
+  </div>
 
-function showDetails(name, price, img, desc) {
-  document.getElementById('dName').innerText = name;
-  document.getElementById('dPrice').innerText = price;
-  document.getElementById('dImg').src = img;
-  document.getElementById('dDesc').innerText = desc;
-  document.getElementById('detailsBox').style.display = 'block';
-}
+  <div class="section">
+    <h2>GLOVES</h2>
+    <div class="products" id="glovesList"></div>
+  </div>
 
-function closeDetails() {
-  document.getElementById('detailsBox').style.display = 'none';
-}
+  <div id="detailsBox">
+    <div class="details-content">
+      <img id="dImg" src="">
+      <h2 id="dName"></h2>
+      <h3 id="dPrice"></h3>
+      <p id="dDesc"></p>
+      <button onclick="closeDetails()">Close</button>
+    </div>
+  </div>
 
-function drawProduct(p) {
-  document.getElementById(p.cat).innerHTML +=
-    '<div class="product">' +
-      '<img src="' + p.img + '" alt="' + p.name + '" onclick="showDetails(\'' + p.name + '\', \'' + p.price + '$\', \'' + p.img + '\', \'' + p.desc + '\')">' +
-      '<h3>' + p.price + '$</h3>' +
-      '<button onclick="addToCart(\'' + p.name + '\', ' + p.price + ', \'' + p.img + '\')">ADD TO CART</button>' +
-    '</div>';
-}
+  <script>
+    function addToCart(name, price, img) {
+      let cart = [];
+      if (localStorage.cart) {
+        cart = JSON.parse(localStorage.cart);
+      }
+      cart.push({ name: name, price: price, img: img });
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
 
-window.onload = function() {
-  var saved = JSON.parse(localStorage.getItem("safety_products")) || [];
-  for (var i = 0; i < saved.length; i++) {
-    drawProduct(saved[i]);
-  }
-};
-</script> 
+    function showDetails(name, price, img, desc) {
+      document.getElementById('dName').innerText = name;
+      document.getElementById('dPrice').innerText = price;
+      document.getElementById('dImg').src = img;
+      document.getElementById('dDesc').innerText = desc;
+      document.getElementById('detailsBox').style.display = 'block';
+    }
 
+    function closeDetails() {
+      document.getElementById('detailsBox').style.display = 'none';
+    }
 
+    function drawProduct(p) {
+      document.getElementById(p.cat).innerHTML +=
+        '<div class="product">' +
+          '<img src="' + p.img + '" alt="' + p.name + '" onclick="showDetails(\'' + p.name + '\', \'' + p.price + '$\', \'' + p.img + '\', \'' + p.desc + '\')">' +
+          '<h3>' + p.price + '$</h3>' +
+          '<button onclick="addToCart(\'' + p.name + '\', ' + p.price + ', \'' + p.img + '\')">ADD TO CART</button>' +
+        '</div>';
+    }
+
+    window.onload = function () {
+      var saved = JSON.parse(localStorage.getItem("safety_products")) || [];
+      for (var i = 0; i < saved.length; i++) {
+        drawProduct(saved[i]);
+      }
+    };
+  </script>
 
 </body>
 </html>
