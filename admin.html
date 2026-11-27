@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Owner Panel - SAFETY STORE</title>
+  <link rel="stylesheet" href="MAIN PAGE2.CSS">
+  <style>
+    .admin-box {
+      background: #111;
+      color: white;
+      padding: 25px;
+      margin: 20px auto;
+      max-width: 800px;
+      text-align: center;
+      border-bottom: 3px solid #ffcc00;
+    }
+    .admin-box h2 { color: #ffcc00; margin-top: 0; }
+    .admin-box input, .admin-box select { padding: 8px; margin: 5px; }
+    .admin-box button {
+      background: #ffcc00;
+      color: black;
+      font-weight: bold;
+      border: none;
+      padding: 9px 18px;
+      cursor: pointer;
+    }
+    .admin-list {
+      max-width: 900px;  
+      margin: 20px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    .admin-card {
+      border: 1px solid #ccc;
+      padding: 15px;
+      width: 210px;
+      text-align: center;
+      background: white;
+    }
+    .admin-card img { width: 120px; height: 120px; }
+    .btn-edit { background: #ffcc00; color: black; border: none; padding: 6px 12px; cursor: pointer; font-weight: bold; }
+    .btn-del { background: #d93025; color: white; border: none; padding: 6px 12px; cursor: pointer; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">//<span>SAFETY</span>ADMIN</div>
+    <div class="tagline">Owner Control Panel</div>
+  </div>
+  <div class="links">
+    <a href="index.html">View Store</a>
+  </div>
+</header>
+
+<div id="adminContent" style="display: none;">
+  <div class="admin-box">
+    <h2 id="formTitle">ADD NEW PRODUCT</h2>
+    <input type="hidden" id="editIndex" value="-1">
+    
+    <select id="cat">
+      <option value="helmetList">HELMET</option>
+      <option value="bootsList">BOOTS</option>
+      <option value="bodyList">Body Protection</option>
+      <option value="eyeList">EYE PROTECTION</option>
+      <option value="glovesList">GLOVES</option>
+    </select>
+    <input type="text" id="pname" placeholder="Product Name">
+    <input type="number" id="pprice" placeholder="Price ($)">
+    <input type="text" id="pdesc" placeholder="Description">
+    <input type="file" id="pimg" accept="image/*">
+    
+    <button onclick="saveProduct()" id="saveBtn">ADD PRODUCT</button>
+    <button onclick="resetForm()" id="cancelBtn" style="display:none; background:#555; color:white;">CANCEL</button>
+  </div>
+
+  <div class="admin-list" id="adminProducts"></div>
+</div>
+
+<script>
+var pass = prompt("Enter Owner Password:");
+if (pass === "1234") {
+  document.getElementById("adminContent").style.display = "block";
+  showList();
+} else {
+  window.location.href = "index.html";
+}
+
+function showList() {
+  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+  var box = document.getElementById("adminProducts");
+  box.innerHTML = "";
+
+  for (var i = 0; i < list.length; i++) {
+    box.innerHTML +=
+      '<div class="admin-card">' +
+        '<img src="' + list[i].img + '">' +
+        '<h4>' + list[i].name + '</h4>' +
+        '<p>' + list[i].price + '$</p>' +
+        '<button class="btn-edit" onclick="editItem(' + i + ')">EDIT</button> ' +
+        '<button class="btn-del" onclick="deleteItem(' + i + ')">DELETE</button>' +
+      '</div>';
+  }
+}
+
+function saveProduct() {
+  var index = Number(document.getElementById("editIndex").value);
+  var cat = document.getElementById("cat").value;
+  var name = document.getElementById("pname").value;
+  var price = document.getElementById("pprice").value;
+  var desc = document.getElementById("pdesc").value || "Safety equipment product.";
+  var file = document.getElementById("pimg").files[0];
+
+  if (name === "" || price === "") return;
+
+  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+
+  if (index === -1 && !file) return;
+
+  if (index !== -1 && !file) {
+    list[index].cat = cat;
+    list[index].name = name;
+    list[index].price = price;
+    list[index].desc = desc;
+    localStorage.setItem("safety_products", JSON.stringify(list));
+    resetForm();
+    showList();
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var item = { cat: cat, name: name, price: price, desc: desc, img: e.target.result };
+    if (index === -1) {
+      list.push(item);
+    } else {
+      list[index] = item;
+    }
+    localStorage.setItem("safety_products", JSON.stringify(list));
+    resetForm();
+    showList();
+  };
+  reader.readAsDataURL(file);
+}
+
+function editItem(index) {
+  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+  var p = list[index];
+
+  document.getElementById("editIndex").value = index;
+  document.getElementById("cat").value = p.cat;
+  document.getElementById("pname").value = p.name;
+  document.getElementById("pprice").value = p.price;
+  document.getElementById("pdesc").value = p.desc;
+
+  document.getElementById("formTitle").innerText = "EDIT PRODUCT";
+  document.getElementById("saveBtn").innerText = "UPDATE";
+  document.getElementById("cancelBtn").style.display = "inline-block";
+}
+
+function deleteItem(index) {
+  var list = JSON.parse(localStorage.getItem("safety_products")) || [];
+  list.splice(index, 1);
+  localStorage.setItem("safety_products", JSON.stringify(list));
+  showList();
+}
+
+function resetForm() {
+  document.getElementById("editIndex").value = "-1";
+  document.getElementById("pname").value = "";
+  document.getElementById("pprice").value = "";
+  document.getElementById("pdesc").value = "";
+  document.getElementById("pimg").value = "";
+  document.getElementById("formTitle").innerText = "ADD NEW PRODUCT";
+  document.getElementById("saveBtn").innerText = "ADD PRODUCT";
+  document.getElementById("cancelBtn").style.display = "none";
+}
+</script>
+
+</body>
+</html>  
