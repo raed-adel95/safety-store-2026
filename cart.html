@@ -3,43 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>Cart</title>
-
   <style>
-    /* Page style */
-    body { 
-      font-family: Arial, sans-serif; 
-      text-align: center; 
-      background-color: white;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
     }
-
-    /* Product box */
-    .cart-item { 
-      display: inline-block; 
-      border: 1px solid #ccc; 
-      background-color: white;
-      margin: 10px; 
-      padding: 10px; 
-      width: 150px; 
+    .item {
+      display: inline-block;
+      border: 1px solid #ccc;
+      margin: 10px;
+      padding: 10px;
+      width: 150px;
     }
-
-    /* Product image */
-    .cart-item img { 
-      width: 100%; 
-      height: auto; 
+    .item img {
+      width: 100%;
     }
-
-    /* Confirm button */
-    #confirmBtn { 
-      margin-top: 30px; 
-      padding: 10px 20px; 
-      font-size: 16px; 
-      background-color: black;
+    .del-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    #confirmBtn {
+      margin-top: 25px;
+      padding: 10px 20px;
+      background: black;
       color: #ffcc00;
       border: none;
       font-weight: bold;
-      cursor: pointer; 
+      cursor: pointer;
     }
-
     a {
       color: black;
       font-weight: bold;
@@ -48,58 +42,56 @@
 </head>
 <body>
 
-<!-- Page Title -->
-<h1>Your Cart</h1>
+  <h1>Your Cart</h1>
 
-<!-- Cart items will appear here -->
-<div id="cart"></div>
+  <div id="cart"></div>
 
-<!-- Confirm order button -->
-<button id="confirmBtn">CONFIRM ORDER</button>
+  <button id="confirmBtn" onclick="confirmOrder()">CONFIRM ORDER</button>
 
-<!-- Back to main page -->
-<p><a href="index.html">Back to Store</a></p>
+  <p><a href="index.html">Back to Store</a></p>
 
-<script>
-  /* Load cart from localStorage */
-  let cart;
-  if (localStorage.cart) {
-    cart = JSON.parse(localStorage.cart);
-  } else {
-    cart = [];
-  }
+  <script>
+    var cart = JSON.parse(localStorage.getItem("cart")) || [];
+    var box = document.getElementById("cart");
+    var btn = document.getElementById("confirmBtn");
 
-  /* Target the cart div */
-  const cartDiv = document.getElementById('cart');
+    function showCart() {
+      box.innerHTML = "";
 
-  /* If cart is empty */
-  if (cart.length === 0) {
-    cartDiv.innerHTML = "<p>Your cart is empty</p>";
-    document.getElementById('confirmBtn').style.display = 'none';
-  } 
-  
-  /* If cart has items */
-  else {
-    for (let i = 0; i < cart.length; i++) {
-      cartDiv.innerHTML += `
-        <div class="cart-item">
-          <img src="${cart[i].img}">
-          <h3>${cart[i].name}</h3>
-          <p>$${cart[i].price}</p>
-        </div>
-      `;
+      if (cart.length == 0) {
+        box.innerHTML = "<p>Your cart is empty</p>";
+        btn.style.display = "none";
+        return;
+      }
+
+      btn.style.display = "inline-block";
+
+      for (var i = 0; i < cart.length; i++) {
+        box.innerHTML +=
+          '<div class="item">' +
+            '<img src="' + cart[i].img + '">' +
+            '<h3>' + cart[i].name + '</h3>' +
+            '<p>$' + cart[i].price + '</p>' +
+            '<button class="del-btn" onclick="removeItem(' + i + ')">REMOVE</button>' +
+          '</div>';
+      }
     }
-  }
 
-  /* Confirm button does: clear cart  */
-  document.getElementById('confirmBtn').onclick = function() {
-    if (cart.length > 0) {
-      localStorage.removeItem('cart'); 
-      cartDiv.innerHTML = "<p>Order confirmed!</p>";
-      document.getElementById('confirmBtn').style.display = 'none';
+    function removeItem(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      showCart();
     }
-  };
-</script>
+
+    function confirmOrder() {
+      cart = [];
+      localStorage.removeItem("cart");
+      box.innerHTML = "<p>Order confirmed!</p>";
+      btn.style.display = "none";
+    }
+
+    showCart();
+  </script>
 
 </body>
 </html>
