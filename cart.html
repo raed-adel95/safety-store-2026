@@ -2,71 +2,135 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAFETY STORE - Cart</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
+      background: #f5f5f5;
       text-align: center;
+    }
+    .header {
+      background: black;
+      color: white;
+      padding: 25px;
+      border-bottom: 3px solid #ffcc00;
+    }
+    .header h1 {
+      margin: 0;
+    }
+    .header span {
+      color: #ffcc00;
+    }
+    #cart {
+      max-width: 850px;
+      margin: 30px auto 10px;
+      padding: 0 15px;
     }
     .item {
       display: inline-block;
-      border: 1px solid #ccc;
+      background: white;
+      border: 1px solid #ddd;
+      border-top: 4px solid #ffcc00;
+      border-radius: 6px;
       margin: 10px;
-      padding: 10px;
-      width: 150px;
+      padding: 15px;
+      width: 180px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
     .item img {
-      width: 100%;
+      width: 130px;
+      height: 130px;
+      object-fit: contain;
+    }
+    .item h3 {
+      margin: 10px 0 5px;
+      font-size: 16px;
+    }
+    .item p {
+      color: #333;
+      font-weight: bold;
+      margin: 5px 0 12px;
     }
     .del-btn {
-      background: red;
+      background: #d93025;
       color: white;
       border: none;
-      padding: 6px 12px;
+      padding: 7px 14px;
+      border-radius: 4px;
       cursor: pointer;
+      font-weight: bold;
+    }
+    .summary {
+      margin: 20px auto;
+    }
+    #totalText {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
     }
     #confirmBtn {
-      margin-top: 25px;
-      padding: 10px 20px;
+      padding: 12px 28px;
       background: black;
       color: #ffcc00;
-      border: none;
+      border: 2px solid #ffcc00;
+      border-radius: 4px;
       font-weight: bold;
+      font-size: 15px;
       cursor: pointer;
     }
-    a {
+    #confirmBtn:hover {
+      background: #ffcc00;
       color: black;
+    }
+    .back-link {
+      display: inline-block;
+      margin: 25px 0 40px;
+      color: black;
+      text-decoration: none;
       font-weight: bold;
+      border-bottom: 2px solid #ffcc00;
+      padding-bottom: 3px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Your Cart</h1>
+  <div class="header">
+    <h1><span>//YOUR</span> CART</h1>
+  </div>
 
   <div id="cart"></div>
 
-  <button id="confirmBtn" onclick="confirmOrder()">CONFIRM ORDER</button>
+  <div class="summary">
+    <div id="totalText"></div>
+    <button id="confirmBtn" onclick="confirmOrder()">CONFIRM ORDER</button>
+  </div>
 
-  <p><a href="index.html">Back to Store</a></p>
+  <a class="back-link" href="index.html">← Back to Store</a>
 
   <script>
     var cart = JSON.parse(localStorage.getItem("safety_cart")) || [];
     var box = document.getElementById("cart");
     var btn = document.getElementById("confirmBtn");
+    var totalText = document.getElementById("totalText");
 
     function showCart() {
       box.innerHTML = "";
+      totalText.innerHTML = "";
 
       if (cart.length == 0) {
-        box.innerHTML = "<p>Your cart is empty</p>";
+        box.innerHTML = "<p style='color:#666; font-size:18px;'>Your cart is empty.</p>";
         btn.style.display = "none";
         return;
       }
 
       btn.style.display = "inline-block";
+      var total = 0;
 
       for (var i = 0; i < cart.length; i++) {
+        total += Number(cart[i].price);
         box.innerHTML +=
           '<div class="item">' +
             '<img src="' + cart[i].img + '">' +
@@ -75,6 +139,8 @@
             '<button class="del-btn" onclick="removeItem(' + i + ')">REMOVE</button>' +
           '</div>';
       }
+
+      totalText.innerHTML = "Total: $" + total;
     }
 
     function removeItem(index) {
@@ -86,7 +152,8 @@
     function confirmOrder() {
       cart = [];
       localStorage.removeItem("safety_cart");
-      box.innerHTML = "<p>Order confirmed!</p>";
+      totalText.innerHTML = "";
+      box.innerHTML = "<p style='color:green; font-size:18px; font-weight:bold;'>✓ Order confirmed! Thank you for shopping with us.</p>";
       btn.style.display = "none";
     }
 
