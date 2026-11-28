@@ -51,7 +51,7 @@
   <p><a href="index.html">Back to Store</a></p>
 
   <script>
-    var cart = JSON.parse(localStorage.getItem("cart")) || [];
+    var cart = JSON.parse(localStorage.getItem("safety_cart")) || [];
     var box = document.getElementById("cart");
     var btn = document.getElementById("confirmBtn");
 
@@ -79,13 +79,13 @@
 
     function removeItem(index) {
       cart.splice(index, 1);
-      localStorage.setItem("cart", JSON.stringify(cart));
+      localStorage.setItem("safety_cart", JSON.stringify(cart));
       showCart();
     }
 
     function confirmOrder() {
       cart = [];
-      localStorage.removeItem("cart");
+      localStorage.removeItem("safety_cart");
       box.innerHTML = "<p>Order confirmed!</p>";
       btn.style.display = "none";
     }
